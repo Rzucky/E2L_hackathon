@@ -6,16 +6,19 @@ const jwt = require('jsonwebtoken');
 const AccessControl = require('accesscontrol');
 const md5 = require('md5');
 const Logger = require('./Activity');
+const Stats = require('./Stats');
 
 const ac = new AccessControl();
 
 ac.grant('base')
+  .readAny('data')
   .readOwn('profile')
   .updateOwn('profile');
 
 ac.grant('admin')
   .extend('base')
   .readAny('profile')
+  .readAny('data')
   .updateAny('profile')
   .deleteAny('profile')
   .createAny('profile');
@@ -62,6 +65,21 @@ class UserManagement {
     // TODO implement
 
     return { error: false, data: {}, notice: 'SUCCESS' };
+  }
+
+  async getStats(req, res) {
+    const me = this;
+    const { role } = req.user;
+
+    if (ac.can(role).readAny('data').granted) {
+      const data = await Stats.getNumberOfRequests();
+      if (data.error) {
+        return res.status(401).json(data);
+      }
+      return res.status(200).json(data);
+    }
+
+    return res.status(403).json({ message: 'Forbidden' });
   }
 
   login(req, res) {
@@ -192,6 +210,7 @@ class UserManagement {
     this.app.post('/createProfile', this.authMiddleware, this.createProfile);
     this.app.get('/users/:username', this.authMiddleware, this.getProfile);
     this.app.get('/simulateUrl/:url', this.authMiddleware, this.simulateUrl);
+    this.app.get('/getStats', this.authMiddleware, this.getStats);
     this.app.put('/users/:username', this.authMiddleware, this.updateProfile);
     this.app.delete('/users/:username', this.authMiddleware, this.deleteProfile);
 
