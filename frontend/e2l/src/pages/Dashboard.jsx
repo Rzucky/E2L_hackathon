@@ -69,7 +69,7 @@ function Dashboard() {
               <DashboardCard13 />
 
               {/* Line chart (Real Time Value) */}
-              <DashboardCard06 />
+              <DashboardCard10 />
 
               {/* Table (Top Channels) */}
               <DashboardCard07 />
