@@ -26,3 +26,5 @@ app.delete('/users/:id', (req, res) => {
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
+
+global.app = app;
