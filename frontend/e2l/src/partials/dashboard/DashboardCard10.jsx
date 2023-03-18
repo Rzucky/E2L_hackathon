@@ -46,14 +46,14 @@ function DashboardCard10() {
   ];
 
   return (
-    <div className="col-span-full xl:col-span-4 bg-white shadow-lg rounded-sm border border-slate-200">
+    <div className="max-height-20 col-span-full xl:col-span-4 bg-white shadow-lg rounded-sm border border-slate-200"  style={{maxHeight: '500px', overflow: 'auto'}}>
       <header className="px-5 py-4 border-b border-slate-100">
         <h2 className="font-semibold text-slate-800">Customers</h2>
       </header>
       <div className="p-3">
 
         {/* Table */}
-        <div className="overflow-x-auto">
+        <div className="">
           <table className="table-auto w-full">
             {/* Table header */}
             <thead className="text-xs font-semibold uppercase text-slate-400 bg-slate-50">

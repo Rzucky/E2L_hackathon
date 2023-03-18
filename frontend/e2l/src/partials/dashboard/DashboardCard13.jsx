@@ -2,7 +2,7 @@ import React from 'react';
 
 function DashboardCard13() {
   return (
-    <div className="col-span-full xl:col-span-6 bg-white shadow-lg rounded-sm border border-slate-200">
+    <div className="col-span-full xl:col-span-6 sm:col-span-12 md:col-span-6 bg-white shadow-lg rounded-sm border border-slate-200">
       <header className="px-5 py-4 border-b border-slate-100">
         <h2 className="font-semibold text-slate-800">Income/Expenses</h2>
       </header>

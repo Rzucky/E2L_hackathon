@@ -4,8 +4,6 @@ import Sidebar from '../partials/Sidebar';
 import Header from '../partials/Header';
 import WelcomeBanner from '../partials/dashboard/WelcomeBanner';
 import DashboardAvatars from '../partials/dashboard/DashboardAvatars';
-import FilterButton from '../partials/actions/FilterButton';
-import Datepicker from '../partials/actions/Datepicker';
 import DashboardCard01 from '../partials/dashboard/DashboardCard01';
 import DashboardCard02 from '../partials/dashboard/DashboardCard02';
 import DashboardCard03 from '../partials/dashboard/DashboardCard03';
@@ -19,7 +17,6 @@ import DashboardCard10 from '../partials/dashboard/DashboardCard10';
 import DashboardCard11 from '../partials/dashboard/DashboardCard11';
 import DashboardCard12 from '../partials/dashboard/DashboardCard12';
 import DashboardCard13 from '../partials/dashboard/DashboardCard13';
-import Banner from '../partials/Banner';
 
 function Dashboard() {
 
@@ -49,18 +46,13 @@ function Dashboard() {
 
               {/* Right: Actions */}
               <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-                {/* Filter button */}
-                <FilterButton />
-                {/* Datepicker built with flatpickr */}
-                <Datepicker />
-                {/* Add view button */}
-                             
+   
               </div>
 
             </div>
 
             {/* Cards */}
-            <div className="grid grid-cols-12 gap-6">
+            <div className="grid grid-cols-12 gap-6 h-100">
 
               {/* Line chart (Real Time Value) */}
               <DashboardCard05 />
@@ -81,7 +73,6 @@ function Dashboard() {
           </div>
         </main>
 
-        <Banner />
 
       </div>
     </div>
