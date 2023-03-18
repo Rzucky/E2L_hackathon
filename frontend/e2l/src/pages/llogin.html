@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <style>
+      /* Styling for the login form */
+      body {
+        background: linear-gradient(to bottom right, #8a2be2, #4b0082);
+        height: 100vh; /* Set the height of the body to 100% of the viewport height */
+      }
+      form {
+        border: 2px solid black;
+        padding: 20px;
+        width: 300px;
+        margin: 0 auto;
+        font-family: 'Roboto', sans-serif;
+        background-color: white;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 10px;
+      }
+      input[type="submit"],
+      input[type="button"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+      }
+      input[type="submit"]:hover,
+      input[type="button"]:hover {
+        background-color: #45a049;
+      }
+      .error {
+        color: red;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="login-form">
+      <h2>Login</h2>
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+      <input type="submit" value="Login">
+      <div id="error-message" class="error"></div>
+    </form>
+    <script>
+      // Handle form submission
+      document.getElementById("login-form").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent default form behavior
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        if (username === "myusername" && password === "mypassword") {
+          alert("Login successful!");
+        } else {
+          document.getElementById("error-message").innerHTML = "Invalid username or password.";
+        }
+      });
+    </script>
+  </body>
+</html>
