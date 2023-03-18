@@ -14,24 +14,18 @@ function DashboardCard10() {
       image: Image01,
       name: 'Alex Shatov',
       email: 'alexshatov@gmail.com',
-      location: '🇺🇸',
-      spent: '$2,890.66',
     },
     {
       id: '1',
       image: Image02,
       name: 'Philip Harbach',
       email: 'philip.h@gmail.com',
-      location: '🇩🇪',
-      spent: '$2,767.04',
     },
     {
       id: '2',
       image: Image03,
       name: 'Mirko Fisuk',
       email: 'mirkofisuk@gmail.com',
-      location: '🇫🇷',
-      spent: '$2,996.00',
     },
     {
       id: '3',
@@ -52,7 +46,7 @@ function DashboardCard10() {
   ];
 
   return (
-    <div className="col-span-full xl:col-span-6 bg-white shadow-lg rounded-sm border border-slate-200">
+    <div className="col-span-full xl:col-span-4 bg-white shadow-lg rounded-sm border border-slate-200">
       <header className="px-5 py-4 border-b border-slate-100">
         <h2 className="font-semibold text-slate-800">Customers</h2>
       </header>
@@ -69,12 +63,6 @@ function DashboardCard10() {
                 </th>
                 <th className="p-2 whitespace-nowrap">
                   <div className="font-semibold text-left">Email</div>
-                </th>
-                <th className="p-2 whitespace-nowrap">
-                  <div className="font-semibold text-left">Spent</div>
-                </th>
-                <th className="p-2 whitespace-nowrap">
-                  <div className="font-semibold text-center">Country</div>
                 </th>
               </tr>
             </thead>
@@ -94,12 +82,6 @@ function DashboardCard10() {
                       </td>
                       <td className="p-2 whitespace-nowrap">
                         <div className="text-left">{customer.email}</div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left font-medium text-green-500">{customer.spent}</div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-lg text-center">{customer.location}</div>
                       </td>
                     </tr>
                   )
