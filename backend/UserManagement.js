@@ -1,7 +1,11 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
+/* eslint-disable no-console */
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const AccessControl = require('accesscontrol');
+const md5 = require('md5');
+const Logger = require('./Activity');
 
 const ac = new AccessControl();
 
@@ -13,16 +17,19 @@ ac.grant('admin')
   .extend('base')
   .readAny('profile')
   .updateAny('profile')
-  .deleteAny('profile');
+  .deleteAny('profile')
+  .createAny('profile');
 
 class UserManagement {
-  constructor() {
+  constructor(hash) {
     this.app = express();
     this.users = [
+      { username: 'user3', password: 'password3', role: 'base' },
       { username: 'user1', password: 'password1', role: 'base' },
       { username: 'user2', password: 'password2', role: 'admin' },
     ];
     this.secretKey = 'mysecretkey';
+    // this.secretKey = hash;
     this.authMiddleware = this.authMiddleware.bind(this);
     this.login = this.login.bind(this);
     this.getProfile = this.getProfile.bind(this);
@@ -41,6 +48,7 @@ class UserManagement {
     try {
       const decoded = jwt.verify(token, this.secretKey);
       req.user = decoded;
+      console.log('aaa', req.user);
       next();
     } catch (err) {
       console.log(err);
@@ -48,11 +56,25 @@ class UserManagement {
     }
   }
 
+  MFA(user, pass) {
+    const me = this;
+
+    // TODO implement
+
+    return { error: false, data: {}, notice: 'SUCCESS' };
+  }
+
   login(req, res) {
+    const me = this;
     const { username, password } = req.body;
     const user = this.users.find((u) => u.username === username && u.password === password);
     if (!user) {
       return res.status(401).json({ message: 'Incorrect username or password' });
+    }
+
+    const resp = me.MFA(username, password);
+    if (resp.error) {
+      return res.status(401).json({ message: 'Unsuccessfull MultiFactor Authentication' });
     }
 
     const token = jwt.sign({ username: user.username, role: user.role }, this.secretKey);
@@ -66,6 +88,32 @@ class UserManagement {
     // const { role } = req.user;
 
     return res.status(200).json({ error: false, data: { searchedUrl: url }, notice: 'SUCCESS' });
+  }
+
+  async createProfile(req, res) {
+    const me = this;
+    console.log(req.body);
+    const { username, password, role } = req.body;
+    console.log(req.user);
+    if (ac.can(req.user.role).createAny('profile').granted) {
+      await Logger.logActivity(req.user.username, `Admin ${req.user.username} created ${username}`);
+
+      const risk = (role === 'admin') ? 0 : 5;
+      try {
+        await global.pgdb.query(
+          `INSERT INTO public.users (username, password, risk_factor, admin) 
+          VALUES ($1, $2, $3, $4);`,
+          [username, md5(password), risk, (role === 'admin')],
+        );
+        console.log('User created');
+      } catch (e) {
+        console.log(e);
+        return res.status(400).json({ message: 'Error creating user' });
+      }
+
+      return res.status(200).json({ message: 'success' });
+    }
+    return res.status(400).json({ error: true, data: {}, notice: 'NO ACCESS' });
   }
 
   getProfile(req, res) {
@@ -141,6 +189,7 @@ class UserManagement {
   start() {
     this.app.use(express.json());
     this.app.post('/login', this.login);
+    this.app.post('/createProfile', this.authMiddleware, this.createProfile);
     this.app.get('/users/:username', this.authMiddleware, this.getProfile);
     this.app.get('/simulateUrl/:url', this.authMiddleware, this.simulateUrl);
     this.app.put('/users/:username', this.authMiddleware, this.updateProfile);
@@ -154,5 +203,3 @@ class UserManagement {
 }
 
 module.exports = UserManagement;
-// const userManager = new UserManagement();
-// userManager.start();

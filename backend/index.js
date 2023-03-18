@@ -1,16 +1,18 @@
 const UserManagement = require('./UserManagement');
 const Simulator = require('./Simulator');
+const Logger = require('./Activity');
 require('dotenv').config();
 
-const token = process.env.DEV_TOKEN;
 const hash = process.env.HASH;
 
 class Start {
   constructor() {
-    const us = new UserManagement();
+    global.logger = new Logger();
+
+    const us = new UserManagement(hash);
     us.start();
-    const sim = new Simulator();
-    sim.startRequests();
+    // const sim = new Simulator();
+    // sim.startRequests();
   }
 }
 
