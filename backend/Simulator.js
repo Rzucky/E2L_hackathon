@@ -1,9 +1,9 @@
 const axios = require('axios');
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwicm9sZSI6ImJhc2UiLCJpYXQiOjE2NzkxMzc4MjF9.UkBgcTcLZ8y5KX7BIyD6-msmRHvrjW1ENssf7Kj5xjw';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwicm9sZSI6ImJhc2UiLCJpYXQiOjE2NzkxNDE5ODd9.nZr9jZqB3BvVhD9Iu_gFfD09siY5zwKmc9VHFL9E4rA';
+const url = 'https://e2l-hackathon.onrender.com/simulateUrl';
 
 class Simulator {
-  static url = 'https://e2l-hackathon.onrender.com/simulateUrl';
 
   constructor() {
     this.startRequests = this.startRequests.bind(this);
@@ -23,7 +23,7 @@ class Simulator {
 
   startRequests() {
     setInterval(() => {
-      axios.get(`${this.url}/${this.generateRandomString(12)}`, {
+      axios.get(`${url}/${this.generateRandomString(12)}`, {
         headers: {
           authorization: token,
         },
