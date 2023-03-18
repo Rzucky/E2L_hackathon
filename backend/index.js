@@ -2,7 +2,8 @@ const UserManagement = require('./UserManagement');
 
 class Start {
   constructor() {
-    UserManagement.start();
+    const us = new UserManagement();
+    us.start();
   }
 }
 

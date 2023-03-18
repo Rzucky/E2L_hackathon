@@ -28,20 +28,22 @@ class UserManagement {
     this.getProfile = this.getProfile.bind(this);
     this.updateProfile = this.updateProfile.bind(this);
     this.deleteProfile = this.deleteProfile.bind(this);
+    this.start = this.start.bind(this);
+    this.simulateUrl = this.simulateUrl.bind(this);
   }
 
   authMiddleware(req, res, next) {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
+    const token = req.headers.authorization;
+    if (!token) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const token = authHeader.split(' ')[1];
     try {
       const decoded = jwt.verify(token, this.secretKey);
       req.user = decoded;
       next();
     } catch (err) {
+      console.log(err);
       return res.status(401).json({ message: 'Invalid token' });
     }
   }
@@ -55,6 +57,15 @@ class UserManagement {
 
     const token = jwt.sign({ username: user.username, role: user.role }, this.secretKey);
     return res.status(200).json({ token });
+  }
+
+  simulateUrl(req, res) {
+    // eslint-disable-next-line no-unused-vars
+    const me = this;
+    const { url } = req.params;
+    // const { role } = req.user;
+
+    return res.status(200).json({ error: false, data: { searchedUrl: url }, notice: 'SUCCESS' });
   }
 
   getProfile(req, res) {
@@ -131,6 +142,7 @@ class UserManagement {
     this.app.use(express.json());
     this.app.post('/login', this.login);
     this.app.get('/users/:username', this.authMiddleware, this.getProfile);
+    this.app.get('/simulateUrl/:url', this.authMiddleware, this.simulateUrl);
     this.app.put('/users/:username', this.authMiddleware, this.updateProfile);
     this.app.delete('/users/:username', this.authMiddleware, this.deleteProfile);
 
