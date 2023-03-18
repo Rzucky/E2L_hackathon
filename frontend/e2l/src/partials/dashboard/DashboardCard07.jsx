@@ -36,7 +36,7 @@ const handlesearch=(event)=>{
 }
 
   return (
-    <div className="col-span-full max-height-20 xl:col-span-8 bg-white shadow-lg rounded-sm border border-slate-200" style={{maxHeight: '500px', overflow: 'auto'}}>
+    <div className="col-span-full max-height-20 lg:col-span-12 md:col-span-12 sm:col-span-12 bg-white shadow-lg rounded-sm border border-slate-200" style={{maxHeight: '450px', overflow: 'auto'}}>
       <header className="px-5 py-4 border-b border-slate-100">
         <h2 className="font-semibold text-slate-800">Top Channels</h2>
         <input type="text" name='name' value={query} onChange={(e)=>handlesearch(e)} className="form-control" placeholder='Search...' />

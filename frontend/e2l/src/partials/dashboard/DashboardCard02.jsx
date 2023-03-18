@@ -60,7 +60,7 @@ function DashboardCard02() {
   };
 
   return (
-    <div className="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white shadow-lg rounded-sm border border-slate-200">
+    <div className="flex flex-col col-span-full lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-sm border border-slate-200">
       <div className="px-5 pt-5">
         <header className="flex justify-between items-start mb-2">
           {/* Icon */}

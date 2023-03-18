@@ -13,10 +13,6 @@ import DashboardCard06 from '../partials/dashboard/DashboardCard06';
 import DashboardCard07 from '../partials/dashboard/DashboardCard07';
 import DashboardCard08 from '../partials/dashboard/DashboardCard08';
 import DashboardCard09 from '../partials/dashboard/DashboardCard09';
-import DashboardCard10 from '../partials/dashboard/DashboardCard10';
-import DashboardCard11 from '../partials/dashboard/DashboardCard11';
-import DashboardCard12 from '../partials/dashboard/DashboardCard12';
-import DashboardCard13 from '../partials/dashboard/DashboardCard13';
 
 function Dashboard() {
 
@@ -34,7 +30,6 @@ function Dashboard() {
 
         <main>
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-
             {/* Welcome banner */}
             <WelcomeBanner />
 
@@ -52,24 +47,32 @@ function Dashboard() {
             </div>
 
             {/* Cards */}
+            <hr /><br />
+            <div style={{ fontWeight: 'bold', fontSize: '30px', textAlign: 'center' }}>Real Time</div>
+            <hr /><br />
             <div className="grid grid-cols-12 gap-6 h-100">
-
-              {/* Line chart (Real Time Value) */}
-              <DashboardCard05 />
-
-              {/* Card (Income/Expenses) */}
-              <DashboardCard13 />
-
-              {/* Line chart (Real Time Value) */}
-              <DashboardCard10 />
-
-              {/* Table (Top Channels) */}
-              <DashboardCard07 />
-
-  
-              
+              <DashboardCard01/>
+              <DashboardCard02/>
+              <DashboardCard03/>
             </div>
-
+            <hr /><br />
+            <div style={{ fontWeight: 'bold', fontSize: '30px', textAlign: 'center' }}>Reports</div>
+            <hr /><br />
+            <div className="grid grid-cols-12 gap-6 h-100">
+              <DashboardCard04/>
+              <div className='col-span-6'>
+              <DashboardCard05/>
+              <DashboardCard06/>
+              </div>
+              <DashboardCard07/>
+            </div>
+            <hr /><br />
+            <div style={{ fontWeight: 'bold', fontSize: '30px', textAlign: 'center' }}>Threats</div>
+            <hr /><br />
+            <div className="grid grid-cols-12 gap-6 h-100">
+              <DashboardCard08/>
+              <DashboardCard09/>
+            </div>
           </div>
         </main>
 

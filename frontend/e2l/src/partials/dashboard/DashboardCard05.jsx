@@ -1,100 +1,100 @@
-import React, { useState, useEffect } from 'react';
-import Info from '../../utils/Info';
-import RealtimeChart from '../../charts/RealtimeChart';
+import React from 'react';
 
-// Import utilities
-import { tailwindConfig, hexToRGB } from '../../utils/Utils';
+import Image01 from '../../images/user-36-05.jpg';
+import Image02 from '../../images/user-36-06.jpg';
+import Image03 from '../../images/user-36-07.jpg';
+import Image04 from '../../images/user-36-08.jpg';
+import Image05 from '../../images/user-36-09.jpg';
 
-function DashboardCard05() {
+function DashboardCard5() {
 
-  // IMPORTANT:
-  // Code below is for demo purpose only, and it's not covered by support.
-  // If you need to replace dummy data with real data,
-  // refer to Chart.js documentation: https://www.chartjs.org/docs/latest
-
-  // Fake real-time data
-  const [counter, setCounter] = useState(0);
-  const [increment, setIncrement] = useState(0);
-  const [range, setRange] = useState(35);
-  
-  // Dummy data to be looped
-  const data = [
-    57.81, 57.75, 55.48, 54.28, 53.14, 52.25, 51.04, 52.49, 55.49, 56.87,
-    53.73, 56.42, 58.06, 55.62, 58.16, 55.22, 58.67, 60.18, 61.31, 63.25,
-    65.91, 64.44, 65.97, 62.27, 60.96, 59.34, 55.07, 59.85, 53.79, 51.92,
-    50.95, 49.65, 48.09, 49.81, 47.85, 49.52, 50.21, 52.22, 54.42, 53.42,
-    50.91, 58.52, 53.37, 57.58, 59.09, 59.36, 58.71, 59.42, 55.93, 57.71,
-    50.62, 56.28, 57.37, 53.08, 55.94, 55.82, 53.94, 52.65, 50.25,
+  const customers = [
+    {
+      id: '0',
+      image: Image01,
+      name: 'Alex Shatov',
+      email: 'alexshatov@gmail.com',
+    },
+    {
+      id: '1',
+      image: Image02,
+      name: 'Philip Harbach',
+      email: 'philip.h@gmail.com',
+    },
+    {
+      id: '2',
+      image: Image03,
+      name: 'Mirko Fisuk',
+      email: 'mirkofisuk@gmail.com',
+    },
+    {
+      id: '3',
+      image: Image04,
+      name: 'Olga Semklo',
+      email: 'olga.s@cool.design',
+      location: '🇮🇹',
+      spent: '$1,220.66',
+    },
+    {
+      id: '4',
+      image: Image05,
+      name: 'Burak Long',
+      email: 'longburak@gmail.com',
+      location: '🇬🇧',
+      spent: '$1,890.66',
+    },
   ];
 
-  const [slicedData, setSlicedData] = useState(data.slice(0, range));
-
-  // Generate fake dates from now to back in time
-  const generateDates = () => {
-    const now = new Date();
-    const dates = [];
-    data.forEach((v, i) => {
-      dates.push(new Date(now - 2000 - i * 2000));
-    });
-    return dates;
-  };
-
-  const [slicedLabels, setSlicedLabels] = useState(generateDates().slice(0, range).reverse());
-
-  // Fake update every 2 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCounter(counter + 1);
-    }, 2000);
-    return () => clearInterval(interval)
-  }, [counter]);
-
-  // Loop through data array and update
-  useEffect(() => {
-    setIncrement(increment + 1);
-    if (increment + range < data.length) {
-      setSlicedData(([x, ...slicedData]) => [...slicedData, data[increment + range]]);
-    } else {
-      setIncrement(0);
-      setRange(0);
-    }
-    setSlicedLabels(([x, ...slicedLabels]) => [...slicedLabels, new Date()]);
-    return () => setIncrement(0)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [counter]);
-
-  const chartData = {
-    labels: slicedLabels,
-    datasets: [
-      // Indigo line
-      {
-        data: slicedData,
-        fill: true,
-        backgroundColor: `rgba(${hexToRGB(tailwindConfig().theme.colors.blue[500])}, 0.08)`,
-        borderColor: tailwindConfig().theme.colors.indigo[500],
-        borderWidth: 2,
-        tension: 0,
-        pointRadius: 0,
-        pointHoverRadius: 3,
-        pointBackgroundColor: tailwindConfig().theme.colors.indigo[500],
-        clip: 20,
-      },
-    ],
-  };
-
   return (
-    <div className="flex flex-col col-span-full lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-sm border border-slate-200">
-      <header className="px-5 py-4 border-b border-slate-100 flex items-center">
-        <h2 className="font-semibold text-slate-800">Real Time Value</h2>
-        <Info className="ml-2" containerClassName="min-w-44">
-          <div className="text-sm text-center">Built with <a className="underline" href="https://www.chartjs.org/" target="_blank" rel="noreferrer">Chart.js</a></div>
-        </Info>
+    <div className="max-height-20 col-span-full xl:col-span-6 bg-white shadow-lg rounded-sm border border-slate-200"  style={{maxHeight: '200px', overflow: 'auto'}}>
+      <header className="px-5 py-4 border-b border-slate-100">
+        <h2 className="font-semibold text-slate-800">Customers</h2>
       </header>
-      {/* Chart built with Chart.js 3 */}
-      {/* Change the height attribute to adjust the chart height */}
-      <RealtimeChart data={chartData} width={595} height={248} />
+      <div className="p-3">
+
+        {/* Table */}
+        <div className="">
+          <table className="table-auto w-full">
+            {/* Table header */}
+            <thead className="text-xs font-semibold uppercase text-slate-400 bg-slate-50">
+              <tr>
+                <th className="p-2 whitespace-nowrap">
+                  <div className="font-semibold text-left">Name</div>
+                </th>
+                <th className="p-2 whitespace-nowrap">
+                  <div className="font-semibold text-left">Email</div>
+                </th>
+              </tr>
+            </thead>
+            {/* Table body */}
+            <tbody className="text-sm divide-y divide-slate-100">
+              {
+                customers.map(customer => {
+                  return (
+                    <tr key={customer.id}>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 shrink-0 mr-2 sm:mr-3">
+                            <img className="rounded-full" src={customer.image} width="40" height="40" alt={customer.name} />
+                          </div>
+                          <div className="font-medium text-slate-800">{customer.name}</div>
+                        </div>
+                      </td>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="text-left">{customer.email}</div>
+                      </td>
+                    </tr>
+                  )
+                })
+              }
+            </tbody>
+          </table>
+
+        </div>
+
+      </div>
     </div>
   );
 }
 
-export default DashboardCard05;
+export default DashboardCard5;
