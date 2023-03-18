@@ -1,0 +1,1 @@
+export const baseURL = "https://e2l-hackathon.onrender.com";

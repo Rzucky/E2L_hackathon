@@ -10,6 +10,7 @@ import './charts/ChartjsConfig';
 // Import pages
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
+import Verify from './pages/Verify';
 
 function App() {
   const currentRole = JSON.parse(localStorage.getItem('role'));
@@ -24,9 +25,9 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route exact path="/login" element={<Login />} />
         <Route exact path="/" element={<Dashboard />} />
-        
+        <Route exact path="/verify" element={<Verify/>} />
       </Routes>
     </>
   );
