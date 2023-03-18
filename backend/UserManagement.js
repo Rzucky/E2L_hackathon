@@ -5,9 +5,12 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const AccessControl = require('accesscontrol');
 const md5 = require('md5');
+const cors = require('cors');
 const Logger = require('./Activity');
 const Stats = require('./Stats');
 const MFA = require('./MFA');
+
+const allowedOrigins = ['213.202.75.60', '213.202.75.60'];
 
 const ac = new AccessControl();
 
@@ -27,6 +30,17 @@ ac.grant('admin')
 class UserManagement {
   constructor(hash) {
     this.app = express();
+    this.app.use(cors({
+      origin(origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+          const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+          return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+      },
+
+    }));
     this.users = [
       { username: 'user3', password: 'password3', role: 'base' },
       { username: 'user1', password: 'password1', role: 'base' },
@@ -232,7 +246,7 @@ class UserManagement {
     this.app.get('/simulateUrl/:url', this.authMiddleware, this.simulateUrl);
     this.app.get('/getStats', this.authMiddleware, this.getStats);
     this.app.put('/users/:username', this.authMiddleware, this.updateProfile);
-    this.app.delete('/users/:username', this.authMiddleware, this.deleteProfile);
+    this.app.post('/delete', this.authMiddleware, this.deleteProfile);
 
     this.app.listen(3000, () => {
       // eslint-disable-next-line no-console
