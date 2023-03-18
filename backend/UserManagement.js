@@ -141,5 +141,6 @@ class UserManagement {
   }
 }
 
-const userManager = new UserManagement();
-userManager.start();
+module.exports = UserManagement;
+// const userManager = new UserManagement();
+// userManager.start();

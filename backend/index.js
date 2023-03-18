@@ -1,30 +1,10 @@
-const express = require('express');
-const app = express();
-const port = 3000;
+const UserManagement = require('./UserManagement');
 
-// Define your endpoints here
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+class Start {
+  constructor() {
+    UserManagement.start();
+  }
+}
 
-app.post('/users', (req, res) => {
-  // TODO: Implement create user logic
-});
-
-app.get('/users/:id', (req, res) => {
-  // TODO: Implement get user by ID logic
-});
-
-app.put('/users/:id', (req, res) => {
-  // TODO: Implement update user by ID logic
-});
-
-app.delete('/users/:id', (req, res) => {
-  // TODO: Implement delete user by ID logic
-});
-
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
-});
-
-global.app = app;
+// eslint-disable-next-line no-new
+new Start();
