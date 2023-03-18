@@ -7,6 +7,7 @@ const AccessControl = require('accesscontrol');
 const md5 = require('md5');
 const Logger = require('./Activity');
 const Stats = require('./Stats');
+const MFA = require('./MFA');
 
 const ac = new AccessControl();
 
@@ -31,14 +32,15 @@ class UserManagement {
       { username: 'user1', password: 'password1', role: 'base' },
       { username: 'user2', password: 'password2', role: 'admin' },
     ];
-    this.secretKey = 'mysecretkey';
-    // this.secretKey = hash;
+    // this.secretKey = 'mysecretkey';
+    this.secretKey = hash;
     this.authMiddleware = this.authMiddleware.bind(this);
     this.login = this.login.bind(this);
     this.getProfile = this.getProfile.bind(this);
     this.updateProfile = this.updateProfile.bind(this);
     this.deleteProfile = this.deleteProfile.bind(this);
     this.start = this.start.bind(this);
+    this.verify = this.verify.bind(this);
     this.simulateUrl = this.simulateUrl.bind(this);
   }
 
@@ -59,12 +61,24 @@ class UserManagement {
     }
   }
 
-  MFA(user, pass) {
+  async verify(req, res) {
     const me = this;
+    const { username, code } = req.body;
 
-    // TODO implement
+    const dataCode = await MFA.getCodeFromDB(username);
+    if (dataCode.error) {
+      return res.status(401).json(dataCode);
+    }
+    if (code === dataCode.data.code) {
+      const userData = await MFA.getUserData(username);
+      if (userData.error) {
+        return res.status(401).json(userData);
+      }
 
-    return { error: false, data: {}, notice: 'SUCCESS' };
+      const token = jwt.sign({ username, role: (userData.data.admin) ? 'admin' : 'base' }, me.secretKey);
+      return res.status(200).json({ error: true, token });
+    }
+    return res.status(401).json({ error: true, message: 'Unsuccessfull MultiFactor Authentication' });
   }
 
   async getStats(req, res) {
@@ -82,21 +96,26 @@ class UserManagement {
     return res.status(403).json({ message: 'Forbidden' });
   }
 
-  login(req, res) {
+  async login(req, res) {
     const me = this;
     const { username, password } = req.body;
-    const user = this.users.find((u) => u.username === username && u.password === password);
-    if (!user) {
-      return res.status(401).json({ message: 'Incorrect username or password' });
+
+    const userData = await MFA.getUserData(username);
+    if (userData.error) {
+      return res.status(401).json(userData);
+    }
+    // const user = this.users.find((u) => u.username === username && u.password === password);
+    if (userData.data.username !== username || userData.data.password !== md5(password)) {
+      return res.status(401).json({ error: true, message: 'Incorrect username or password' });
+    }
+    const data = await MFA.saveCodeToDB(username);
+    if (data.error) {
+      return res.status(401).json(data);
     }
 
-    const resp = me.MFA(username, password);
-    if (resp.error) {
-      return res.status(401).json({ message: 'Unsuccessfull MultiFactor Authentication' });
-    }
+    // await MFA.sendMail(username, data.data.code);
 
-    const token = jwt.sign({ username: user.username, role: user.role }, this.secretKey);
-    return res.status(200).json({ token });
+    return res.status(200).json(data);
   }
 
   simulateUrl(req, res) {
@@ -207,6 +226,7 @@ class UserManagement {
   start() {
     this.app.use(express.json());
     this.app.post('/login', this.login);
+    this.app.post('/verify', this.verify);
     this.app.post('/createProfile', this.authMiddleware, this.createProfile);
     this.app.get('/users/:username', this.authMiddleware, this.getProfile);
     this.app.get('/simulateUrl/:url', this.authMiddleware, this.simulateUrl);
