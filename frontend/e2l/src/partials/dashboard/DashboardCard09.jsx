@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import myImage from '../../images/pfp.png';
 import PopupForm from '../actions/PopupForm';
+import { baseURL } from "../../api";
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 
 function DashboardCard09() {
@@ -9,12 +12,11 @@ function DashboardCard09() {
   const [filterdata, setFilterdata]= useState([]);
   const [query, setQuery]= useState('');
 
-  //const token = JSON.parse(localStorage.getItem("token"));
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RuaSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3OTE5MDQ1NH0.lwf8PGxMYe5Y0WGKbI2DIXiBju78GUZu8vGMlzB4nFA";
+  const token = JSON.parse(localStorage.getItem("token"));
   const [stats, setStats] = useState([]);
 
 useEffect(() => {
-    fetch("https://e2l-hackathon.onrender.com" + "/users", {
+    fetch(baseURL + "/users", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -30,18 +32,18 @@ useEffect(() => {
     const getSearch= event.target.value;
     //console.log(getSearch);
   }
-  
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const onAdd = () => {
-    setIsFormVisible(prevState => !prevState);
-  };
+const [isFormVisible, setIsFormVisible] = useState(false);
+const onAdd = () => {
+  setIsFormVisible(prevState => !prevState);
+};
 
   return (
     <div className="col-span-full max-height-20 lg:col-span-12 md:col-span-12 sm:col-span-12 bg-white shadow-lg rounded-sm border border-slate-200" style={{maxHeight: '400px', overflow: 'auto'}}>
       <header className="px-5 py-4 border-b border-slate-100">
-        <div className='col-span-11'></div>
+        <div className='col-span-11'>
         <div className='col-span-1'>
-          <button onClick={onAdd}>Show Form</button>
+          <button className="px-4 py-2 self-end tracking-wide text-white transition-colors duration-200 transform bg-purple-700 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600" onClick={onAdd}>Create user</button>
+        </div>
         </div>
       </header>
       <div className="p-3">
