@@ -6,26 +6,11 @@ import RealtimeChart from '../../charts/RealtimeChart';
 import { tailwindConfig, hexToRGB } from '../../utils/Utils';
 
 function DashboardCard01() {
-
-  // IMPORTANT:
-  // Code below is for demo purpose only, and it's not covered by support.
-  // If you need to replace dummy data with real data,
-  // refer to Chart.js documentation: https://www.chartjs.org/docs/latest
-
-  // Fake real-time data
   const [counter, setCounter] = useState(0);
   const [increment, setIncrement] = useState(0);
   const [range, setRange] = useState(35);
-  
-  // Dummy data to be looped
-  const data = [
-    57.81, 57.75, 55.48, 54.28, 53.14, 52.25, 51.04, 52.49, 55.49, 56.87,
-    53.73, 56.42, 58.06, 55.62, 58.16, 55.22, 58.67, 60.18, 61.31, 63.25,
-    65.91, 64.44, 65.97, 62.27, 60.96, 59.34, 55.07, 59.85, 53.79, 51.92,
-    50.95, 49.65, 48.09, 49.81, 47.85, 49.52, 50.21, 52.22, 54.42, 53.42,
-    50.91, 58.52, 53.37, 57.58, 59.09, 59.36, 58.71, 59.42, 55.93, 57.71,
-    50.62, 56.28, 57.37, 53.08, 55.94, 55.82, 53.94, 52.65, 50.25,
-  ];
+  const [data, setData] = useState(Array.from({ length: 200 }, () => Math.floor(Math.random() * 6)));
+  const [getStatsData, setGetStatsData] = useState([]);
 
   const [slicedData, setSlicedData] = useState(data.slice(0, range));
 
@@ -34,7 +19,7 @@ function DashboardCard01() {
     const now = new Date();
     const dates = [];
     data.forEach((v, i) => {
-      dates.push(new Date(now - 2000 - i * 2000));
+      dates.push(new Date(now - 3000 - i * 3000));
     });
     return dates;
   };
@@ -45,8 +30,8 @@ function DashboardCard01() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCounter(counter + 1);
-    }, 2000);
-    return () => clearInterval(interval)
+    }, 3000);
+    return () => clearInterval(interval);
   }, [counter]);
 
   // Loop through data array and update
@@ -54,13 +39,19 @@ function DashboardCard01() {
     setIncrement(increment + 1);
     if (increment + range < data.length) {
       setSlicedData(([x, ...slicedData]) => [...slicedData, data[increment + range]]);
+      // Calculate differences between consecutive values in the data array
+      const differences = [];
+      for (let i = increment + range - 1; i > increment; i--) {
+        differences.unshift(data[i] - data[i - 1]);
+      }
+      setGetStatsData(getStatsData.concat(differences));
     } else {
       setIncrement(0);
       setRange(0);
     }
     setSlicedLabels(([x, ...slicedLabels]) => [...slicedLabels, new Date()]);
-    return () => setIncrement(0)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => setIncrement(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [counter]);
 
   const chartData = {
@@ -81,9 +72,9 @@ function DashboardCard01() {
       },
     ],
   };
-
+  
   return (
-    <div className="flex flex-col col-span-full lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-sm border border-slate-200">
+    <div className="flex flex-col col-span-full lg:col-span-12 md:col-span-12 sm:col-span-12 bg-white shadow-lg rounded-sm border border-slate-200">
       <header className="px-5 py-4 border-b border-slate-100 flex items-center">
         <h2 className="font-semibold text-slate-800">Bad Threats</h2>
       </header>
