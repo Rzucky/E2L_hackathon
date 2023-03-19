@@ -73,7 +73,7 @@ function Dashboard() {
               <DashboardCard08/>
             </div>
             <hr /><br />
-            <div style={{ fontWeight: 'bold', fontSize: '30px', textAlign: 'center' }}>User</div>
+            <div style={{ fontWeight: 'bold', fontSize: '30px', textAlign: 'center' }}>Users</div>
             <hr /><br />
             <div className="grid grid-cols-12 gap-6 h-100">
               <DashboardCard09/>
