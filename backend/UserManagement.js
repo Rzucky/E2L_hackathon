@@ -29,6 +29,7 @@ ac.grant('admin')
   .extend('base')
   .readAny('profile')
   .readAny('data')
+  .readAny('reports')
   .updateAny('profile')
   .deleteAny('profile')
   .createAny('profile')
@@ -260,7 +261,7 @@ class UserManagement {
   // TODO NOT WORKING
   async deleteProfile(req, res) {
     const me = this;
-    const { username } = req.params;
+    const { username } = req.body;
     const { role } = req.user;
 
     if (ac.can(role).deleteAny('profile').granted) {
@@ -321,6 +322,20 @@ class UserManagement {
     return res.status(403).json({ message: 'Forbidden' });
   }
 
+  async getReport(req, res) {
+    const me = this;
+    const { role } = req.user;
+
+    if (ac.can(role).readAny('reports').granted) {
+      const data = await Alerts.getReports();
+      if (data.error) {
+        return res.status(401).json({ error: true, message: 'Reports not found' });
+      }
+      return res.status(200).json(data);
+    }
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
   async devcode(req, res) {
     const me = this;
     const { username } = req.params;
@@ -338,6 +353,7 @@ class UserManagement {
     this.app.get('/getStats', this.authMiddleware, this.getStats);
     this.app.get('/insertThreat', this.authMiddleware, this.insertThreat);
     this.app.get('/alerts', this.authMiddleware, this.getAlerts);
+    this.app.get('/reports', this.authMiddleware, this.getReport);
     this.app.get('/devcode/:username', this.devcode);
     this.app.post('/delete', this.authMiddleware, this.deleteProfile);
 

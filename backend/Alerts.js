@@ -42,6 +42,34 @@ class Alerts {
       return { error: true, data: {}, notice: 'Internal error' };
     }
   }
+
+  static async getReports() {
+    try {
+      const dataDb = await global.pgdb.query(`SELECT a.username, a."time", a."type", t.severity, u."location"  
+      FROM public.alerts a JOIN public.threats t ON a."type"  = t."type" 
+      JOIN users u ON a.username = u.username ;`);
+      if (dataDb) {
+        const reports = [];
+        const data = dataDb.rows;
+        for (const rep of data) {
+          const report = {
+            username: rep.username,
+            time: rep.time,
+            type: rep.type,
+            severity: rep.severity,
+            location: rep.location,
+          };
+          reports.push(report);
+        }
+        console.log('gotten report data from DB', data);
+        return { error: false, data: { reports } };
+      }
+      throw new Error();
+    } catch (e) {
+      console.log(e);
+      return { error: true, data: {}, notice: 'Internal error' };
+    }
+  }
 }
 
 module.exports = Alerts;
