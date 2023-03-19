@@ -87,7 +87,6 @@ class UserManagement {
     console.log(url);
     let data = await Threats.checkSimilarity(url);
     if (data.error) {
-      console.log('2');
       return res.status(401).json(data);
     }
     if (data.data.malicious) {
@@ -98,11 +97,11 @@ class UserManagement {
       await Threats.increaseOccurrenceInDb(type);
       // add to alerts
       await Alerts.addAlert(req.user.username, type, url);
-      next();
+
+      return next();
     }
 
     data = await Threats.checkThreatTypes(url);
-    console.log('3');
     if (data.error) {
       return res.status(401).json(data);
     }
@@ -114,7 +113,7 @@ class UserManagement {
       await Threats.increaseOccurrenceInDb(type);
       // add to alerts
       await Alerts.addAlert(req.user.username, type, url);
-      next();
+      return next();
     }
     req.threat = malicious;
     next();
@@ -180,7 +179,6 @@ class UserManagement {
   async simulateUrl(req, res) {
     const me = this;
     const { url } = req.body;
-    console.log('4');
     try {
       let queryStr = '';
       if (req.threat) {

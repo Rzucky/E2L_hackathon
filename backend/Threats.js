@@ -55,11 +55,13 @@ class Threats {
         let malicious = false;
         let foundThreat = {};
         for (const threat of data) {
-          if (!this.isRegex(threat.type)) {
+          if (!this.isRegex(threat.regex)) {
+            console.log('skipping threat', threat);
             // eslint-disable-next-line no-continue
             continue;
           }
-          const resp = new RegExp(threat.type).test(userUrl);
+          const resp = new RegExp(threat.regex).test(userUrl);
+          console.log(threat, resp, userUrl);
           if (resp) {
             malicious = true;
             foundThreat = threat;
@@ -67,9 +69,6 @@ class Threats {
           }
         }
 
-        if (malicious) {
-          return { error: false, data: { malicious }, notice: 'safe' };
-        }
         return { error: false, data: { malicious, threat: foundThreat } };
       }
     } catch (e) {
