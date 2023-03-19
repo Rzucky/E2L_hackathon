@@ -12,6 +12,8 @@ const {
 } = require('express-csp-header');
 const Logger = require('./Activity');
 const Stats = require('./Stats');
+const Threats = require('./Threats');
+const Alerts = require('./Alerts');
 const MFA = require('./MFA');
 
 // app.use(express.json())
@@ -29,7 +31,8 @@ ac.grant('admin')
   .readAny('data')
   .updateAny('profile')
   .deleteAny('profile')
-  .createAny('profile');
+  .createAny('profile')
+  .createAny('threat');
 
 class UserManagement {
   constructor(hash) {
@@ -41,10 +44,6 @@ class UserManagement {
       },
     }));
     this.app.use(cors());
-    // this.app.use((req, res, next) => {
-    //   res.header('Access-Control-Allow-Origin', '*');
-    //   next();
-    // });
 
     this.users = [
       { username: 'user3', password: 'password3', role: 'base' },
@@ -57,6 +56,7 @@ class UserManagement {
     this.login = this.login.bind(this);
     this.getUsers = this.getUsers.bind(this);
     this.deleteProfile = this.deleteProfile.bind(this);
+    this.insertThreat = this.insertThreat.bind(this);
     this.start = this.start.bind(this);
     this.verify = this.verify.bind(this);
     this.simulateUrl = this.simulateUrl.bind(this);
@@ -79,8 +79,45 @@ class UserManagement {
     }
   }
 
-  checkThreat(req, res, next) {
-    return {};
+  async checkThreat(req, res, next) {
+    const me = this;
+    const { url } = req.body;
+    let malicious = false;
+    let type = '';
+    console.log(url);
+    let data = await Threats.checkSimilarity(url);
+    if (data.error) {
+      console.log('2');
+      return res.status(401).json(data);
+    }
+    if (data.data.malicious) {
+      malicious = true;
+      type = 'similarity';
+      req.threat = malicious;
+      // increase in base
+      await Threats.increaseOccurrenceInDb(type);
+      // add to alerts
+      await Alerts.addAlert(req.user.username, type, url);
+      next();
+    }
+
+    data = await Threats.checkThreatTypes(url);
+    console.log('3');
+    if (data.error) {
+      return res.status(401).json(data);
+    }
+    if (data.data.malicious) {
+      malicious = true;
+      type = data.data.threat.type;
+      req.threat = malicious;
+      // increase in base
+      await Threats.increaseOccurrenceInDb(type);
+      // add to alerts
+      await Alerts.addAlert(req.user.username, type, url);
+      next();
+    }
+    req.threat = malicious;
+    next();
   }
 
   async verify(req, res) {
@@ -140,13 +177,26 @@ class UserManagement {
     return res.status(200).json(data);
   }
 
-  simulateUrl(req, res) {
-    // eslint-disable-next-line no-unused-vars
+  async simulateUrl(req, res) {
     const me = this;
-    const { url } = req.params;
-    // const { role } = req.user;
+    const { url } = req.body;
+    console.log('4');
+    try {
+      let queryStr = '';
+      if (req.threat) {
+        queryStr = 'UPDATE public.requests SET bad = bad + 1';
+      } else {
+        queryStr = 'UPDATE public.requests SET good = good + 1';
+      }
+      await global.pgdb.query(
+        queryStr,
+      );
+    } catch (e) {
+      console.log(e);
+      return res.status(400).json({ error: true, data: {}, notice: 'Internal error' });
+    }
     if (req.threat) {
-      return res.status(200).json({ error: true, message: 'Malicious URL, call blocked' });
+      return res.status(400).json({ error: true, message: 'Malicious URL, call blocked' });
     }
 
     return res.status(200).json({ error: false, message: 'All OK' });
@@ -209,7 +259,9 @@ class UserManagement {
     res.status(403).json({ message: 'Forbidden' });
   }
 
+  // TODO NOT WORKING
   async deleteProfile(req, res) {
+    const me = this;
     const { username } = req.params;
     const { role } = req.user;
 
@@ -230,17 +282,45 @@ class UserManagement {
       return res.status(200).json({ error: false, message: 'Profile deleted successfully' });
     }
 
-    if (ac.can(role).deleteOwn('profile').granted && username === req.user.username) {
-      const userIndex = this.users.findIndex((u) => u.username === username);
-      if (userIndex === -1) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+    res.status(403).json({ message: 'Forbidden' });
+  }
 
-      this.users.splice(userIndex, 1);
-      return res.status(200).json({ message: 'Profile deleted successfully' });
+  async insertThreat(req, res) {
+    const me = this;
+    const { type, regex, severity } = req.body;
+    const { role } = req.user;
+
+    if (ac.can(role).createAny('threat').granted) {
+      try {
+        await global.pgdb.query(
+          `INSERT INTO public.threats (type, regex, occurrence, severity) 
+          VALUES ($1, $2, $3, $4);`,
+          [type, regex, 0, severity],
+        );
+        console.log('Threat inserted');
+      } catch (e) {
+        console.log(e);
+        return res.status(400).json({ message: 'Error inserting threat' });
+      }
+      return res.status(200).json({ error: false, message: 'Threat type inserted successfully' });
     }
 
-    res.status(403).json({ message: 'Forbidden' });
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
+  async getAlerts(req, res) {
+    const me = this;
+    const { type, regex, severity } = req.body;
+    const { role } = req.user;
+
+    if (ac.can(role).readAny('data').granted) {
+      const data = await Alerts.getAlerts();
+      if (data.error) {
+        return res.status(401).json({ error: true, message: 'Alerts not found' });
+      }
+      return res.status(200).json(data);
+    }
+    return res.status(403).json({ message: 'Forbidden' });
   }
 
   async devcode(req, res) {
@@ -256,8 +336,10 @@ class UserManagement {
     this.app.post('/verify', this.verify);
     this.app.post('/createProfile', this.authMiddleware, this.createProfile);
     this.app.get('/users', this.authMiddleware, this.getUsers);
-    this.app.get('/simulateUrl/:url', this.authMiddleware, this.simulateUrl);
+    this.app.post('/simulateUrl', this.authMiddleware, this.checkThreat, this.simulateUrl);
     this.app.get('/getStats', this.authMiddleware, this.getStats);
+    this.app.get('/insertThreat', this.authMiddleware, this.insertThreat);
+    this.app.get('/alerts', this.authMiddleware, this.getAlerts);
     this.app.get('/devcode/:username', this.devcode);
     this.app.post('/delete', this.authMiddleware, this.deleteProfile);
 
