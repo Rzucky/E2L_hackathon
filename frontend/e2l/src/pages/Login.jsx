@@ -37,6 +37,8 @@ function Login() {
                 setError("Wrong email or password!");
                 return;
             } else {
+                console.log("OK");
+                localStorage.setItem('username', JSON.stringify(username));
                 navigate("/verify");
             }
         

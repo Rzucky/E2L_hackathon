@@ -11,6 +11,8 @@ import './charts/ChartjsConfig';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Verify from './pages/Verify';
+import AuthenticatedPage from './pages/AuthenticatedPage';
+import VerificationPage from './pages/VerificationPage';
 
 function App() {
   const currentRole = JSON.parse(localStorage.getItem('role'));
@@ -26,8 +28,17 @@ function App() {
     <>
       <Routes>
         <Route exact path="/login" element={<Login />} />
-        <Route exact path="/" element={<Dashboard />} />
-        <Route exact path="/verify" element={<Verify/>} />
+        <Route exact path="/" element={<AuthenticatedPage>
+            {
+              (currentRole === "admin" || currentRole === "base") &&
+              <Dashboard/>
+            }
+        </AuthenticatedPage>} />
+        <Route exact path="/verify" element={<VerificationPage>
+            {
+              <Verify/>
+            }
+        </VerificationPage>} />
       </Routes>
     </>
   );
