@@ -7,9 +7,14 @@ const jwt = require('jsonwebtoken');
 const AccessControl = require('accesscontrol');
 const md5 = require('md5');
 const cors = require('cors');
+const {
+  expressCspHeader, INLINE, NONE, SELF,
+} = require('express-csp-header');
 const Logger = require('./Activity');
 const Stats = require('./Stats');
 const MFA = require('./MFA');
+
+// app.use(express.json())
 
 const ac = new AccessControl();
 
@@ -29,10 +34,17 @@ ac.grant('admin')
 class UserManagement {
   constructor(hash) {
     this.app = express();
-    this.app.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
-      next();
-    });
+    this.app.use(expressCspHeader({
+      policies: {
+        'default-src': [expressCspHeader.NONE],
+        'img-src': [expressCspHeader.SELF],
+      },
+    }));
+    this.app.use(cors());
+    // this.app.use((req, res, next) => {
+    //   res.header('Access-Control-Allow-Origin', '*');
+    //   next();
+    // });
 
     this.users = [
       { username: 'user3', password: 'password3', role: 'base' },
