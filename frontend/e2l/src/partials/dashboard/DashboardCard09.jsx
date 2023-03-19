@@ -26,28 +26,22 @@ useEffect(() => {
   }, [token]);
 
 
-const handlesearch=(event)=>{
-  const getSearch= event.target.value;
-  //console.log(getSearch);
-
+  const handlesearch=(event)=>{
+    const getSearch= event.target.value;
+    //console.log(getSearch);
+  }
+  
   const [isFormVisible, setIsFormVisible] = useState(false);
-
-  const formVisibility = () => {
+  const onAdd = () => {
     setIsFormVisible(prevState => !prevState);
   };
-
-
-}
 
   return (
     <div className="col-span-full max-height-20 lg:col-span-12 md:col-span-12 sm:col-span-12 bg-white shadow-lg rounded-sm border border-slate-200" style={{maxHeight: '400px', overflow: 'auto'}}>
       <header className="px-5 py-4 border-b border-slate-100">
         <div className='col-span-11'></div>
         <div className='col-span-1'>
-        <div>
-      <button onClick={formVisibility}>Show Form</button>
-      {isFormVisible && <PopupForm />}
-    </div>
+          <button onClick={onAdd}>Show Form</button>
         </div>
       </header>
       <div className="p-3">
@@ -101,6 +95,7 @@ const handlesearch=(event)=>{
 
         </div>
       </div>
+      {isFormVisible && <PopupForm closePopup={setIsFormVisible} />}
     </div>
   );
 }

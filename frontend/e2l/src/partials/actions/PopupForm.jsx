@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { Outlet, Link, useNavigate } from "react-router-dom";
 
 
-function PopupForm() {
+function PopupForm({closePopup}) {
 
 
   const navigate = useNavigate();
@@ -41,6 +41,7 @@ function PopupForm() {
           } else {
               console.log("OK");
               localStorage.setItem('username', JSON.stringify(username));
+              closePopup(false);
               navigate("/");
           }
       } catch (error) {
