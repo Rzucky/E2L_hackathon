@@ -1,44 +1,97 @@
 import React from 'react';
-import DoughnutChart from '../../charts/DoughnutChart';
 
-// Import utilities
-import { tailwindConfig } from '../../utils/Utils';
+import Image01 from '../../images/user-36-05.jpg';
+import Image02 from '../../images/user-36-06.jpg';
+import Image03 from '../../images/user-36-07.jpg';
+import Image04 from '../../images/user-36-08.jpg';
+import Image05 from '../../images/user-36-09.jpg';
 
-function DashboardCard06() {
+function DashboardCard6() {
 
-  const chartData = {
-    labels: ['United States', 'Italy', 'Other'],
-    datasets: [
-      {
-        label: 'Top Countries',
-        data: [
-          35, 30, 35,
-        ],
-        backgroundColor: [
-          tailwindConfig().theme.colors.indigo[500],
-          tailwindConfig().theme.colors.blue[400],
-          tailwindConfig().theme.colors.indigo[800],
-        ],
-        hoverBackgroundColor: [
-          tailwindConfig().theme.colors.indigo[600],
-          tailwindConfig().theme.colors.blue[500],
-          tailwindConfig().theme.colors.indigo[900],
-        ],
-        hoverBorderColor: tailwindConfig().theme.colors.white,
-      },
-    ],
-  };
+  const customers = [
+    {
+      id: '0',
+      image: Image01,
+      name: 'Alex Shatov',
+      email: 'alexshatov@gmail.com',
+    },
+    {
+      id: '1',
+      image: Image02,
+      name: 'Philip Harbach',
+      email: 'philip.h@gmail.com',
+    },
+    {
+      id: '2',
+      image: Image03,
+      name: 'Mirko Fisuk',
+      email: 'mirkofisuk@gmail.com',
+    },
+    {
+      id: '3',
+      image: Image04,
+      name: 'Olga Semklo',
+      email: 'olga.s@cool.design',
+      location: '🇮🇹',
+      spent: '$1,220.66',
+    },
+    {
+      id: '4',
+      image: Image05,
+      name: 'Burak Long',
+      email: 'longburak@gmail.com',
+      location: '🇬🇧',
+      spent: '$1,890.66',
+    },
+  ];
 
   return (
-    <div className="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white shadow-lg rounded-sm border border-slate-200">
+    <div className="max-height-20 col-span-full xl:col-span-4 bg-white shadow-lg rounded-sm border border-slate-200"  style={{maxHeight: '200px', overflow: 'auto'}}>
       <header className="px-5 py-4 border-b border-slate-100">
-        <h2 className="font-semibold text-slate-800">Top Countries</h2>
+        <h2 className="font-semibold text-slate-800">Customers</h2>
       </header>
-      {/* Chart built with Chart.js 3 */}
-      {/* Change the height attribute to adjust the chart height */}
-      <DoughnutChart data={chartData} width={389} height={260} />
+      <div className="p-3">
+
+        {/* Table */}
+        <div className="">
+          <table className="table-auto w-full">
+            {/* Table header */}
+            <thead className="text-xs font-semibold uppercase text-slate-400 bg-slate-50">
+              <tr>
+                <th className="p-2 whitespace-nowrap">
+                  <div className="font-semibold text-left">URL</div>
+                </th>
+                <th className="p-2 whitespace-nowrap">
+                  <div className="font-semibold text-left">#</div>
+                </th>
+              </tr>
+            </thead>
+            {/* Table body */}
+            <tbody className="text-sm divide-y divide-slate-100">
+              {
+                customers.map(customer => {
+                  return (
+                    <tr key={customer.id}>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="font-medium text-slate-800">{customer.name}</div>
+                        </div>
+                      </td>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="text-left">{customer.email}</div>
+                      </td>
+                    </tr>
+                  )
+                })
+              }
+            </tbody>
+          </table>
+
+        </div>
+
+      </div>
     </div>
   );
 }
 
-export default DashboardCard06;
+export default DashboardCard6;
