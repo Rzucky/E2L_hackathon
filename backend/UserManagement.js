@@ -327,7 +327,7 @@ class UserManagement {
     const { role } = req.user;
 
     if (ac.can(role).readAny('reports').granted) {
-      const data = await Alerts.getReports();
+      const data = await Stats.getReports();
       if (data.error) {
         return res.status(401).json({ error: true, message: 'Reports not found' });
       }
