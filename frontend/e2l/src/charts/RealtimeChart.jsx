@@ -35,11 +35,11 @@ function RealtimeChart({
             border: {
               display: false,
             },
-            suggestedMin: 30,
-            suggestedMax: 80,
+            suggestedMin: 0,
+            suggestedMax: 6,
             ticks: {
               maxTicksLimit: 5,
-              callback: (value) => formatValue(value),
+              callback: (value) => formatValue(value).replace('$', ''), // remove the dollar sign
             },
           },
           x: {
@@ -108,7 +108,7 @@ function RealtimeChart({
     <React.Fragment>
       <div className="px-5 py-3">
         <div className="flex items-start">
-          <div className="text-3xl font-bold text-slate-800 mr-2 tabular-nums">$<span ref={chartValue}>57.81</span></div>
+          <div className="text-3xl font-bold text-slate-800 mr-2 tabular-nums"><span ref={chartValue}>57.81</span></div>
           <div ref={chartDeviation} className="text-sm font-semibold text-white px-1.5 rounded-full"></div>
         </div>
       </div>

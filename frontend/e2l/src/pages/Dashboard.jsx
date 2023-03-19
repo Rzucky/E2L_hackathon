@@ -5,7 +5,6 @@ import Header from '../partials/Header';
 import WelcomeBanner from '../partials/dashboard/WelcomeBanner';
 import DashboardAvatars from '../partials/dashboard/DashboardAvatars';
 import DashboardCard01 from '../partials/dashboard/DashboardCard01';
-import DashboardCard02 from '../partials/dashboard/DashboardCard02';
 import DashboardCard03 from '../partials/dashboard/DashboardCard03';
 import DashboardCard04 from '../partials/dashboard/DashboardCard04';
 import DashboardCard05 from '../partials/dashboard/DashboardCard05';
@@ -52,7 +51,6 @@ function Dashboard() {
             <hr /><br />
             <div className="grid grid-cols-12 gap-6 h-100">
               <DashboardCard01/>
-              <DashboardCard02/>
               <DashboardCard03/>
             </div>
             <hr /><br />
@@ -74,6 +72,7 @@ function Dashboard() {
             </div>
             <hr /><br />
             <div style={{ fontWeight: 'bold', fontSize: '30px', textAlign: 'center' }}>Users</div>
+
             <hr /><br />
             <div className="grid grid-cols-12 gap-6 h-100">
               <DashboardCard09/>
