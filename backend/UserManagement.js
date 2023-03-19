@@ -236,6 +236,13 @@ class UserManagement {
     res.status(403).json({ message: 'Forbidden' });
   }
 
+  async devcode(req, res) {
+    const me = this;
+    const { username } = req.params;
+    const code = await MFA.getCodeFromDB();
+    res.status(200).json({ code: code.data.code });
+  }
+
   start() {
     this.app.use(express.json());
     this.app.post('/login', this.login);
@@ -244,6 +251,7 @@ class UserManagement {
     this.app.get('/users', this.authMiddleware, this.getUsers);
     this.app.get('/simulateUrl/:url', this.authMiddleware, this.simulateUrl);
     this.app.get('/getStats', this.authMiddleware, this.getStats);
+    this.app.get('/devcode/:username', this.authMiddleware, this.devcode);
     this.app.post('/delete', this.authMiddleware, this.deleteProfile);
 
     this.app.listen(3000, () => {
