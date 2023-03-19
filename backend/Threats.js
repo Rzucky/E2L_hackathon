@@ -21,5 +21,24 @@ class Threats {
       console.log(e);
       return { error: true, data: {}, notice: 'Internal error' };
     }
+    return { error: true, data: {}, notice: 'Internal error' };
+  }
+
+  static async checkThreatTypes(userUrl)
+  {
+    try {
+      const dataDb = await global.pgdb.query('SELECT * FROM public.threats');
+      if (dataDb) {
+        const data = dataDb.rows;
+        console.log('gotten threats from DB', data);
+        return { error: false, data };
+      }
+    } catch (e) {
+      console.log(e);
+      return { error: true, data: {}, notice: 'Internal error' };
+    }
+    return { error: true, data: {}, notice: 'Internal error' };
   }
 }
+
+module.exports = Threats;

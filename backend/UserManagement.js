@@ -79,6 +79,10 @@ class UserManagement {
     }
   }
 
+  checkThreat(req, res, next) {
+    return {};
+  }
+
   async verify(req, res) {
     const me = this;
     const { username, code } = req.body;
@@ -141,8 +145,11 @@ class UserManagement {
     const me = this;
     const { url } = req.params;
     // const { role } = req.user;
+    if (req.threat) {
+      return res.status(200).json({ error: true, message: 'Malicious URL, call blocked' });
+    }
 
-    return res.status(200).json({ error: false, data: { searchedUrl: url }, notice: 'SUCCESS' });
+    return res.status(200).json({ error: false, message: 'All OK' });
   }
 
   async createProfile(req, res) {
@@ -239,7 +246,7 @@ class UserManagement {
   async devcode(req, res) {
     const me = this;
     const { username } = req.params;
-    const code = await MFA.getCodeFromDB();
+    const code = await MFA.getCodeFromDB(username);
     res.status(200).json({ code: code.data.code });
   }
 
