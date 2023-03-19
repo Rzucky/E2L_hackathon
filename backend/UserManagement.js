@@ -16,8 +16,6 @@ const Threats = require('./Threats');
 const Alerts = require('./Alerts');
 const MFA = require('./MFA');
 
-// app.use(express.json())
-
 const ac = new AccessControl();
 
 ac.grant('base')
@@ -46,12 +44,6 @@ class UserManagement {
     }));
     this.app.use(cors());
 
-    this.users = [
-      { username: 'user3', password: 'password3', role: 'base' },
-      { username: 'user1', password: 'password1', role: 'base' },
-      { username: 'user2', password: 'password2', role: 'admin' },
-    ];
-    // this.secretKey = 'mysecretkey';
     this.secretKey = hash;
     this.authMiddleware = this.authMiddleware.bind(this);
     this.login = this.login.bind(this);
@@ -94,6 +86,8 @@ class UserManagement {
       malicious = true;
       type = 'similarity';
       req.threat = malicious;
+      await Logger.logActivity(req.user.username, `User ${req.user.username} pressed on a malicious link ${url}`);
+
       // increase in base
       await Threats.increaseOccurrenceInDb(type);
       // add to alerts
@@ -110,6 +104,8 @@ class UserManagement {
       malicious = true;
       type = data.data.threat.type;
       req.threat = malicious;
+      await Logger.logActivity(req.user.username, `User ${req.user.username} pressed on a malicious link ${url}`);
+
       // increase in base
       await Threats.increaseOccurrenceInDb(type);
       // add to alerts
@@ -128,6 +124,7 @@ class UserManagement {
     if (dataCode.error) {
       return res.status(401).json(dataCode);
     }
+    await Logger.logActivity(username, `User ${username} started MFA request with code:${code}`);
     if (code === dataCode.data.code) {
       const userData = await MFA.getUserData(username);
       if (userData.error) {
@@ -163,7 +160,7 @@ class UserManagement {
     if (userData.error) {
       return res.status(401).json(userData);
     }
-    // const user = this.users.find((u) => u.username === username && u.password === password);
+
     if (userData.data.username !== username || userData.data.password !== md5(password)) {
       return res.status(401).json({ error: true, message: 'Incorrect username or password' });
     }
@@ -172,7 +169,7 @@ class UserManagement {
       return res.status(401).json(data);
     }
 
-    // await MFA.sendMail(username, data.data.code);
+    await MFA.sendMail(username, data.data.code);
 
     return res.status(200).json(data);
   }
@@ -269,6 +266,8 @@ class UserManagement {
       if (userData.error) {
         return res.status(401).json({ error: true, message: 'User not found' });
       }
+      await Logger.logActivity(req.user.username, `Admin ${req.user.username} deleted username:${username}`);
+
       try {
         await global.pgdb.query(
           'DELETE FROM public.users WHERE username = $1;',
@@ -296,6 +295,11 @@ class UserManagement {
           VALUES ($1, $2, $3, $4);`,
           [type, regex, 0, severity],
         );
+        await Logger.logActivity(
+          req.user.username,
+          `Admin ${req.user.username} inserted threat of type ${type} with regex: ${regex}`,
+        );
+
         console.log('Threat inserted');
       } catch (e) {
         console.log(e);
@@ -336,6 +340,25 @@ class UserManagement {
     return res.status(403).json({ message: 'Forbidden' });
   }
 
+  async getThreats(req, res) {
+    const me = this;
+    const { role } = req.user;
+
+    if (ac.can(role).readAny('data').granted) {
+      const dataDbThr = await global.pgdb.query('SELECT * FROM public.threats;');
+      const threats = [];
+      if (dataDbThr) {
+        const dataU = dataDbThr.rows;
+        for (const thr of dataU) {
+          threats.push(thr);
+        }
+      }
+      return res.status(200).json({ error: false, data: { threats } });
+    }
+
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
   async devcode(req, res) {
     const me = this;
     const { username } = req.params;
@@ -353,6 +376,7 @@ class UserManagement {
     this.app.get('/getStats', this.authMiddleware, this.getStats);
     this.app.get('/insertThreat', this.authMiddleware, this.insertThreat);
     this.app.get('/alerts', this.authMiddleware, this.getAlerts);
+    this.app.get('/threats', this.authMiddleware, this.getThreats);
     this.app.get('/reports', this.authMiddleware, this.getReport);
     this.app.get('/devcode/:username', this.devcode);
     this.app.post('/delete', this.authMiddleware, this.deleteProfile);

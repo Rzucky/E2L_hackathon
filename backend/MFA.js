@@ -44,7 +44,7 @@ class MFA {
       console.log('Code saved to DB');
     } catch (e) {
       console.log(e);
-      return { error: true, data: {}, notice: 'Internal error' };
+      return { error: true, data: { code }, notice: 'Internal error' };
     }
 
     return { error: false, data: {} };
