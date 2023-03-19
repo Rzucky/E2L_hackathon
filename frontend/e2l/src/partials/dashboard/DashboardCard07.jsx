@@ -27,39 +27,10 @@ const token = JSON.parse(localStorage.getItem("token"));
       .catch((error) => console.log(error));
   }, [token]);
 
-  const handlesearch=(event)=>{
-    const getSearch= event.target.value;
-    //console.log(getSearch);
-  
-    if(getSearch.length > 0){
-      const searchdata2=userData2.filter( (item)=> item.username.toLowerCase().includes(getSearch));
-      setUserdata2(searchdata2);
-    } else{
-      setUserdata2(filterdata);
-    }
-    setQuery(getSearch);
-  }
-/*
-const [stats, setStats] = useState([]);
-
-const token = JSON.parse(localStorage.getItem("token"));
-
-useEffect(() => {
-    fetch(baseURL + "/getStats", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setStats(data.data));
-  }, [token]);
-*/
   return (
     <div className="col-span-full max-height-20 lg:col-span-12 md:col-span-12 sm:col-span-12 bg-white shadow-lg rounded-sm border border-slate-200" style={{maxHeight: '450px', overflow: 'auto'}}>
       <header className="px-5 py-4 border-b border-slate-100">
-        <h2 className="font-semibold text-slate-800">Top Channels</h2>
-        <input type="text" name='name' value={query} onChange={(e)=>handlesearch(e)} className="form-control" placeholder='Search...' />
+        <h2 className="font-semibold text-slate-800">Reports And Analysis</h2>
       </header>
       <div className="p-3">
         {/* Table */}

@@ -9,8 +9,7 @@ function DashboardCard09() {
   const [filterdata, setFilterdata]= useState([]);
   const [query, setQuery]= useState('');
 
-  //const token = JSON.parse(localStorage.getItem("token"));
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RuaSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3OTE5MDQ1NH0.lwf8PGxMYe5Y0WGKbI2DIXiBju78GUZu8vGMlzB4nFA";
+  const token = JSON.parse(localStorage.getItem("token"));
   const [stats, setStats] = useState([]);
 
 useEffect(() => {

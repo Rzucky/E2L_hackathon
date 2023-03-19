@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { useState, useEffect } from 'react';
 import Image01 from '../../images/user-36-05.jpg';
 import Image02 from '../../images/user-36-06.jpg';
 import Image03 from '../../images/user-36-07.jpg';
@@ -8,47 +8,25 @@ import Image05 from '../../images/user-36-09.jpg';
 
 function DashboardCard5() {
 
-  const customers = [
-    {
-      id: '0',
-      image: Image01,
-      name: 'Alex Shatov',
-      email: 'alexshatov@gmail.com',
-    },
-    {
-      id: '1',
-      image: Image02,
-      name: 'Philip Harbach',
-      email: 'philip.h@gmail.com',
-    },
-    {
-      id: '2',
-      image: Image03,
-      name: 'Mirko Fisuk',
-      email: 'mirkofisuk@gmail.com',
-    },
-    {
-      id: '3',
-      image: Image04,
-      name: 'Olga Semklo',
-      email: 'olga.s@cool.design',
-      location: '🇮🇹',
-      spent: '$1,220.66',
-    },
-    {
-      id: '4',
-      image: Image05,
-      name: 'Burak Long',
-      email: 'longburak@gmail.com',
-      location: '🇬🇧',
-      spent: '$1,890.66',
-    },
-  ];
+  const [users, setUsers]= useState([]);
+  const token = JSON.parse(localStorage.getItem("token"));
+
+  useEffect(() => {
+    fetch("https://e2l-hackathon.onrender.com" + "/users", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setUsers(data.data.users));
+  }, [token]);
 
   return (
-    <div className="max-height-20 col-span-full xl:col-span-6 bg-white shadow-lg rounded-sm border border-slate-200"  style={{maxHeight: '200px', overflow: 'auto'}}>
+    <div className="max-height-20 col-span-full lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-sm border border-slate-200"  style={{maxHeight: '200px', overflow: 'auto'}}>
       <header className="px-5 py-4 border-b border-slate-100">
-        <h2 className="font-semibold text-slate-800">Customers</h2>
+        <h2 className="font-semibold text-slate-800">User Risk Level</h2>
       </header>
       <div className="p-3">
 
@@ -69,16 +47,16 @@ function DashboardCard5() {
             {/* Table body */}
             <tbody className="text-sm divide-y divide-slate-100">
               {
-                customers.map(customer => {
+                users.map(user => {
                   return (
-                    <tr key={customer.id}>
+                    <tr key={user.username}>
                       <td className="p-2 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="font-medium text-slate-800">{customer.name}</div>
+                          <div className="font-medium text-slate-800">{user.username}</div>
                         </div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-left">{customer.email}</div>
+                        <div className="text-left">{user.riskFactor}</div>
                       </td>
                     </tr>
                   )
