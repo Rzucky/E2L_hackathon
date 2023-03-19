@@ -6,7 +6,6 @@ import WelcomeBanner from '../partials/dashboard/WelcomeBanner';
 import DashboardAvatars from '../partials/dashboard/DashboardAvatars';
 import DashboardCard01 from '../partials/dashboard/DashboardCard01';
 import DashboardCard03 from '../partials/dashboard/DashboardCard03';
-import DashboardCard04 from '../partials/dashboard/DashboardCard04';
 import DashboardCard05 from '../partials/dashboard/DashboardCard05';
 import DashboardCard06 from '../partials/dashboard/DashboardCard06';
 import DashboardCard07 from '../partials/dashboard/DashboardCard07';
@@ -57,11 +56,8 @@ function Dashboard() {
             <div style={{ fontWeight: 'bold', fontSize: '30px', textAlign: 'center' }}>Reports</div>
             <hr /><br />
             <div className="grid grid-cols-12 gap-6 h-100">
-              <DashboardCard04/>
-              <div className='col-span-6'>
               <DashboardCard05/>
               <DashboardCard06/>
-              </div>
               <DashboardCard07/>
             </div>
             <hr /><br />
