@@ -251,7 +251,7 @@ class UserManagement {
     this.app.get('/users', this.authMiddleware, this.getUsers);
     this.app.get('/simulateUrl/:url', this.authMiddleware, this.simulateUrl);
     this.app.get('/getStats', this.authMiddleware, this.getStats);
-    this.app.get('/devcode/:username', this.authMiddleware, this.devcode);
+    this.app.get('/devcode/:username', this.devcode);
     this.app.post('/delete', this.authMiddleware, this.deleteProfile);
 
     this.app.listen(3000, () => {
