@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from 'react';
 
 
-
 function DashboardCard09() {
-const [userData, setUserdata]= useState([]);
-const [filterdata, setFilterdata]= useState([]);
-const [query, setQuery]= useState('');
+  const [userData, setUserdata]= useState([]);
+  const [users, setUsers]= useState([]);
+  const [filterdata, setFilterdata]= useState([]);
+  const [query, setQuery]= useState('');
 
-useEffect(()=>{
-  const getUserdata= async () =>{
-    const reqData= await fetch("https://jsonplaceholder.typicode.com/users");
-    const resData= await reqData.json();
-    //console.log(resData);
+  //const token = JSON.parse(localStorage.getItem("token"));
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RuaSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY3OTE4MjYzOX0.NgOILR9XF8jWRrrnnb7y0C5cMucR85h6GTYsMmPPuaU";
+  const [stats, setStats] = useState([]);
 
-    setUserdata(resData);
-    setFilterdata(resData);
-  }
-  getUserdata();
-},[]);
+useEffect(() => {
+    fetch("https://e2l-hackathon.onrender.com" + "/users", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setUsers(data.data));
+  }, [token]);
 
 
 const handlesearch=(event)=>{
@@ -25,7 +28,7 @@ const handlesearch=(event)=>{
   //console.log(getSearch);
 
   if(getSearch.length > 0){
-    const searchdata=userData.filter( (item)=> item.name.toLowerCase().includes(getSearch));
+    const searchdata=users.filter( (item)=> item.name.toLowerCase().includes(getSearch));
     setUserdata(searchdata);
   } else{
     setUserdata(filterdata);
@@ -36,7 +39,7 @@ const handlesearch=(event)=>{
 }
 
   return (
-    <div className="col-span-full max-height-20 lg:col-span-12 md:col-span-12 sm:col-span-12 bg-white shadow-lg rounded-sm border border-slate-200" style={{maxHeight: '300px', overflow: 'auto'}}>
+    <div className="col-span-full max-height-20 lg:col-span-12 md:col-span-12 sm:col-span-12 bg-white shadow-lg rounded-sm border border-slate-200" style={{maxHeight: '400px', overflow: 'auto'}}>
       <header className="px-5 py-4 border-b border-slate-100">
         <h2 className="font-semibold text-slate-800">Top Channels</h2>
         <input type="text" name='name' value={query} onChange={(e)=>handlesearch(e)} className="form-control" placeholder='Search...' />
@@ -70,7 +73,7 @@ const handlesearch=(event)=>{
             <tbody className="text-sm font-medium divide-y divide-slate-100">
               {/* Row */}
               {
-                userData.map((getUser, index)=>(
+                users.map((getUser, index)=>(
 
 
               <tr key={index}>
@@ -84,7 +87,7 @@ const handlesearch=(event)=>{
                   </div>
                 </td>
                 <td className="p-2">
-                  <div className="text-center">{getUser.name}</div>
+                  <div className="text-center">{getUser.username}</div>
                 </td>
                 <td className="p-2">
                   <div className="text-center text-green-500">$3,877</div>

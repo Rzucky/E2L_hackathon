@@ -19,14 +19,18 @@ useEffect(()=>{
   getUserdata();
 },[]);
 
-
 const handlesearch=(event)=>{
   const getSearch= event.target.value;
   //console.log(getSearch);
 
   if(getSearch.length > 0){
     const searchdata=userData.filter( (item)=> item.name.toLowerCase().includes(getSearch));
+    const searchdata1=userData.filter( (item)=> item.username.toLowerCase().includes(getSearch));
+    //time
+    //severity
+
     setUserdata(searchdata);
+    setUserdata(searchdata1);
   } else{
     setUserdata(filterdata);
   }
@@ -34,7 +38,22 @@ const handlesearch=(event)=>{
 
 
 }
+/*
+const [stats, setStats] = useState([]);
 
+const token = JSON.parse(localStorage.getItem("token"));
+
+useEffect(() => {
+    fetch(baseURL + "/getStats", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setStats(data.data));
+  }, [token]);
+*/
   return (
     <div className="col-span-full max-height-20 lg:col-span-12 md:col-span-12 sm:col-span-12 bg-white shadow-lg rounded-sm border border-slate-200" style={{maxHeight: '450px', overflow: 'auto'}}>
       <header className="px-5 py-4 border-b border-slate-100">
@@ -42,7 +61,6 @@ const handlesearch=(event)=>{
         <input type="text" name='name' value={query} onChange={(e)=>handlesearch(e)} className="form-control" placeholder='Search...' />
       </header>
       <div className="p-3">
-
         {/* Table */}
         <div className="">
           <table className="table-auto w-full" >
@@ -50,19 +68,19 @@ const handlesearch=(event)=>{
             <thead className="text-xs uppercase text-slate-400 bg-slate-50 rounded-sm">
               <tr>
                 <th className="p-2">
-                  <div className="font-semibold text-left">Source</div>
+                  <div className="font-semibold text-left">Person</div>
                 </th>
                 <th className="p-2">
-                  <div className="font-semibold text-center">Visitors</div>
+                  <div className="font-semibold text-center">Time</div>
                 </th>
                 <th className="p-2">
-                  <div className="font-semibold text-center">Revenues</div>
+                  <div className="font-semibold text-center">Type</div>
                 </th>
                 <th className="p-2">
-                  <div className="font-semibold text-center">Sales</div>
+                  <div className="font-semibold text-center">Severity</div>
                 </th>
                 <th className="p-2">
-                  <div className="font-semibold text-center">Conversion</div>
+                  <div className="font-semibold text-center">Location</div>
                 </th>
               </tr>
             </thead>
@@ -87,13 +105,13 @@ const handlesearch=(event)=>{
                   <div className="text-center">{getUser.name}</div>
                 </td>
                 <td className="p-2">
-                  <div className="text-center text-green-500">$3,877</div>
+                  <div className="text-center text-green-500">{getUser.website}</div>
                 </td>
                 <td className="p-2">
-                  <div className="text-center">267</div>
+                  <div className="text-center">{getUser.username}</div>
                 </td>
                 <td className="p-2">
-                  <div className="text-center text-sky-500">4.7%</div>
+                  <div className="text-center text-sky-500">{getUser.phone}</div>
                 </td>
               </tr>
 
