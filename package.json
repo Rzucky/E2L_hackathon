@@ -20,7 +20,8 @@
     "express-csp-header": "^5.1.0",
     "jsonwebtoken": "^9.0.0",
     "md5": "^2.3.0",
-    "pg": "^8.10.0"
+    "pg": "^8.10.0",
+    "string-similarity": "^4.0.4"
   },
   "devDependencies": {
     "eslint": "^8.36.0",
