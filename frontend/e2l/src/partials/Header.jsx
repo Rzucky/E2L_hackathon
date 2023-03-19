@@ -6,8 +6,7 @@ function Header({
   sidebarOpen,
   setSidebarOpen
 }) {
-
-
+  
   return (
     <header className="sticky top-0 bg-white border-b border-slate-200 z-30">
       <div className="px-4 sm:px-6 lg:px-8">
